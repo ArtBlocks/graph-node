@@ -178,7 +178,7 @@ pub struct GraphQlConnection<Q, S> {
     logger: Logger,
     graphql_runner: Arc<Q>,
     stream: WebSocketStream<S>,
-    schema: Arc<ApiSchema>,
+    deployment: SubgraphDeploymentId,
 }
 
 impl<Q, S> GraphQlConnection<Q, S>
@@ -189,7 +189,7 @@ where
     /// Creates a new GraphQL subscription service.
     pub(crate) fn new(
         logger: &Logger,
-        schema: Arc<ApiSchema>,
+        deployment: SubgraphDeploymentId,
         stream: WebSocketStream<S>,
         graphql_runner: Arc<Q>,
     ) -> Self {
@@ -198,7 +198,7 @@ where
             logger: logger.new(o!("component" => "GraphQlConnection")),
             graphql_runner,
             stream,
-            schema,
+            deployment,
         }
     }
 
@@ -207,7 +207,7 @@ where
         mut msg_sink: mpsc::UnboundedSender<WsMessage>,
         logger: Logger,
         connection_id: String,
-        schema: Arc<ApiSchema>,
+        deployment: SubgraphDeploymentId,
         graphql_runner: Arc<Q>,
     ) -> Result<(), WsError> {
         let mut operations = Operations::new(msg_sink.clone());
@@ -305,7 +305,7 @@ where
                     };
 
                     // Construct a subscription
-                    let target = QueryTarget::Deployment(schema.schema.id.clone());
+                    let target = QueryTarget::Deployment(deployment.clone());
                     let subscription = Subscription {
                         // Subscriptions currently do not benefit from the generational cache
                         // anyways, so don't bother passing a network.
@@ -413,7 +413,7 @@ where
             msg_sink,
             self.logger.clone(),
             self.id.clone(),
-            self.schema.clone(),
+            self.deployment.clone(),
             self.graphql_runner.clone(),
         );
 
