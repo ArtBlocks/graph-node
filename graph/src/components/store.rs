@@ -869,9 +869,6 @@ pub trait SubgraphStore: Send + Sync + 'static {
     /// Queries the store for entities that match the store query.
     fn find(&self, query: EntityQuery) -> Result<Vec<Entity>, QueryExecutionError>;
 
-    /// Queries the store for a single entity matching the store query.
-    fn find_one(&self, query: EntityQuery) -> Result<Option<Entity>, QueryExecutionError>;
-
     /// Find the reverse of keccak256 for `hash` through looking it up in the
     /// rainbow table.
     fn find_ens_name(&self, _hash: &str) -> Result<Option<String>, QueryExecutionError>;
@@ -1058,10 +1055,6 @@ impl SubgraphStore for MockStore {
     }
 
     fn find(&self, _query: EntityQuery) -> Result<Vec<Entity>, QueryExecutionError> {
-        unimplemented!()
-    }
-
-    fn find_one(&self, _query: EntityQuery) -> Result<Option<Entity>, QueryExecutionError> {
         unimplemented!()
     }
 
