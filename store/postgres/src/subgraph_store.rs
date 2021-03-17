@@ -650,6 +650,16 @@ impl SubgraphStore {
     pub(crate) async fn vacuum(&self) -> Vec<Result<(), StoreError>> {
         join_all(self.stores.values().map(|store| store.vacuum())).await
     }
+
+    pub(crate) fn get_proof_of_indexing<'a>(
+        self: Arc<Self>,
+        id: &'a SubgraphDeploymentId,
+        indexer: &'a Option<Address>,
+        block: EthereumBlockPointer,
+    ) -> DynTryFuture<'a, Option<[u8; 32]>> {
+        let (store, site) = self.store(&id).unwrap();
+        store.clone().get_proof_of_indexing(site, indexer, block)
+    }
 }
 
 #[async_trait::async_trait]
@@ -665,16 +675,6 @@ impl SubgraphStoreTrait for SubgraphStore {
     ) -> DynTryFuture<'a, bool> {
         let (store, site) = self.store(&id).unwrap();
         store.clone().supports_proof_of_indexing(site)
-    }
-
-    fn get_proof_of_indexing<'a>(
-        self: Arc<Self>,
-        id: &'a SubgraphDeploymentId,
-        indexer: &'a Option<Address>,
-        block: EthereumBlockPointer,
-    ) -> DynTryFuture<'a, Option<[u8; 32]>> {
-        let (store, site) = self.store(&id).unwrap();
-        store.clone().get_proof_of_indexing(site, indexer, block)
     }
 
     fn get(&self, key: EntityKey) -> Result<Option<Entity>, QueryExecutionError> {
