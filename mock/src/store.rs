@@ -103,7 +103,11 @@ impl SubgraphStore for MockStore {
     fn writable(
         &self,
         _: &SubgraphDeploymentId,
-    ) -> Arc<dyn graph::components::store::WritableStore> {
+    ) -> Result<Arc<dyn graph::components::store::WritableStore>, StoreError> {
+        todo!()
+    }
+
+    fn is_deployed(&self, _: &SubgraphDeploymentId) -> Result<bool, Error> {
         todo!()
     }
 }

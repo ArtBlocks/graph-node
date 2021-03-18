@@ -848,6 +848,11 @@ pub trait SubgraphStore: Send + Sync + 'static {
     /// rainbow table.
     fn find_ens_name(&self, _hash: &str) -> Result<Option<String>, QueryExecutionError>;
 
+    /// Check if the store is accepting queries for the specified subgraph.
+    /// May return true even if the specified subgraph is not currently assigned to an indexing
+    /// node, as the store will still accept queries.
+    fn is_deployed(&self, id: &SubgraphDeploymentId) -> Result<bool, Error>;
+
     /// Create a new deployment for the subgraph `name`. If the deployment
     /// already exists (as identified by the `schema.id`), reuse that, otherwise
     /// create a new deployment, and point the current or pending version of
@@ -898,7 +903,7 @@ pub trait SubgraphStore: Send + Sync + 'static {
     /// adding a root query type etc. to it
     fn api_schema(&self, subgraph_id: &SubgraphDeploymentId) -> Result<Arc<ApiSchema>, StoreError>;
 
-    fn writable(&self, id: &SubgraphDeploymentId) -> Arc<dyn WritableStore>;
+    fn writable(&self, id: &SubgraphDeploymentId) -> Result<Arc<dyn WritableStore>, StoreError>;
 }
 
 #[async_trait]
@@ -908,13 +913,6 @@ pub trait WritableStore: Send + Sync + 'static {
         &self,
         subgraph_id: &SubgraphDeploymentId,
     ) -> Result<Option<EthereumBlockPointer>, Error>;
-
-    /// Check if the store is accepting queries for the specified subgraph.
-    /// May return true even if the specified subgraph is not currently assigned to an indexing
-    /// node, as the store will still accept queries.
-    fn is_deployed(&self, id: &SubgraphDeploymentId) -> Result<bool, Error> {
-        self.block_ptr(id).map(|ptr| ptr.is_some())
-    }
 
     /// Start an existing subgraph deployment.
     fn start_subgraph_deployment(
@@ -1074,8 +1072,12 @@ impl SubgraphStore for MockStore {
         unimplemented!()
     }
 
-    fn writable(&self, _: &SubgraphDeploymentId) -> Arc<dyn WritableStore> {
-        Arc::new(MockStore::new())
+    fn writable(&self, _: &SubgraphDeploymentId) -> Result<Arc<dyn WritableStore>, StoreError> {
+        Ok(Arc::new(MockStore::new()))
+    }
+
+    fn is_deployed(&self, _: &SubgraphDeploymentId) -> Result<bool, Error> {
+        unimplemented!()
     }
 }
 
