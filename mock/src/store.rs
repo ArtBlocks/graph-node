@@ -100,7 +100,10 @@ impl SubgraphStore for MockStore {
         unimplemented!()
     }
 
-    fn writable(&self) -> Arc<dyn graph::components::store::WritableStore> {
+    fn writable(
+        &self,
+        _: &SubgraphDeploymentId,
+    ) -> Arc<dyn graph::components::store::WritableStore> {
         todo!()
     }
 }

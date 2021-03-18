@@ -832,7 +832,7 @@ where
 
         // Create the actual subgraph-specific block stream
         BlockStream::new(
-            self.subgraph_store.writable(),
+            self.subgraph_store.writable(&deployment_id),
             chain_store,
             eth_adapter.clone(),
             self.node_id.clone(),

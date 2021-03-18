@@ -898,7 +898,7 @@ pub trait SubgraphStore: Send + Sync + 'static {
     /// adding a root query type etc. to it
     fn api_schema(&self, subgraph_id: &SubgraphDeploymentId) -> Result<Arc<ApiSchema>, StoreError>;
 
-    fn writable(&self) -> Arc<dyn WritableStore>;
+    fn writable(&self, id: &SubgraphDeploymentId) -> Arc<dyn WritableStore>;
 }
 
 #[async_trait]
@@ -1074,7 +1074,7 @@ impl SubgraphStore for MockStore {
         unimplemented!()
     }
 
-    fn writable(&self) -> Arc<dyn WritableStore> {
+    fn writable(&self, _: &SubgraphDeploymentId) -> Arc<dyn WritableStore> {
         Arc::new(MockStore::new())
     }
 }
