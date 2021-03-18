@@ -172,7 +172,9 @@ fn create_subgraph(
         NETWORK_NAME.to_string(),
         SubgraphVersionSwitchingMode::Instant,
     )?;
-    SUBGRAPH_STORE.start_subgraph_deployment(&*LOGGER, &subgraph_id)
+    SUBGRAPH_STORE
+        .writable()
+        .start_subgraph_deployment(&*LOGGER, &subgraph_id)
 }
 
 pub fn create_test_subgraph(subgraph_id: &SubgraphDeploymentId, schema: &str) {
@@ -211,7 +213,7 @@ pub fn transact_errors(
         subgraph_id.clone(),
         metrics_registry.clone(),
     );
-    store.subgraph_store().transact_block_operations(
+    store.subgraph_store().writable().transact_block_operations(
         subgraph_id,
         block_ptr_to,
         Vec::new(),
@@ -238,6 +240,7 @@ pub fn transact_entities_and_dynamic_data_sources(
     data_sources: Vec<&DataSource>,
     ops: Vec<EntityOperation>,
 ) -> Result<(), StoreError> {
+    let store = store.writable();
     let mut entity_cache = EntityCache::new(store.clone());
     entity_cache.append(ops);
     let mods = entity_cache
