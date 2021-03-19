@@ -827,6 +827,14 @@ impl SubgraphStoreTrait for SubgraphStore {
             Err(e) => Err(e.into()),
         }
     }
+
+    fn least_block_ptr(
+        &self,
+        id: &SubgraphDeploymentId,
+    ) -> Result<Option<EthereumBlockPointer>, Error> {
+        let (store, site) = self.store(id)?;
+        store.block_ptr(site.as_ref())
+    }
 }
 
 struct WritableStore {
