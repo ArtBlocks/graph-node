@@ -1,7 +1,7 @@
 use mockall::predicate::*;
 use mockall::*;
 
-use graph::prelude::*;
+use graph::{components::store::DeploymentLocator, prelude::*};
 use web3::types::H256;
 
 mock! {
@@ -64,7 +64,7 @@ impl SubgraphStore for MockStore {
         _: NodeId,
         _: String,
         _: SubgraphVersionSwitchingMode,
-    ) -> Result<(), StoreError> {
+    ) -> Result<DeploymentLocator, StoreError> {
         unimplemented!()
     }
 
@@ -76,15 +76,15 @@ impl SubgraphStore for MockStore {
         unimplemented!()
     }
 
-    fn reassign_subgraph(&self, _: &SubgraphDeploymentId, _: &NodeId) -> Result<(), StoreError> {
+    fn reassign_subgraph(&self, _: &DeploymentLocator, _: &NodeId) -> Result<(), StoreError> {
         unimplemented!()
     }
 
-    fn assigned_node(&self, _: &SubgraphDeploymentId) -> Result<Option<NodeId>, StoreError> {
+    fn assigned_node(&self, _: &DeploymentLocator) -> Result<Option<NodeId>, StoreError> {
         unimplemented!()
     }
 
-    fn assignments(&self, _: &NodeId) -> Result<Vec<SubgraphDeploymentId>, StoreError> {
+    fn assignments(&self, _: &NodeId) -> Result<Vec<DeploymentLocator>, StoreError> {
         unimplemented!()
     }
 
@@ -102,7 +102,7 @@ impl SubgraphStore for MockStore {
 
     fn writable(
         &self,
-        _: &SubgraphDeploymentId,
+        _: &DeploymentLocator,
     ) -> Result<Arc<dyn graph::components::store::WritableStore>, StoreError> {
         todo!()
     }
@@ -122,6 +122,10 @@ impl SubgraphStore for MockStore {
         &self,
         _: &SubgraphDeploymentId,
     ) -> Result<Arc<dyn graph::components::store::WritableStore>, StoreError> {
+        unimplemented!()
+    }
+
+    fn locators(&self, _: &str) -> Result<Vec<DeploymentLocator>, StoreError> {
         unimplemented!()
     }
 }
