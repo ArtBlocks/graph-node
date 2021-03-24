@@ -53,7 +53,7 @@ lazy_static! {
     pub static ref STORE: Arc<Store> = STORE_POOL_CONFIG.0.clone();
     static ref CONFIG: Config = STORE_POOL_CONFIG.2.clone();
     pub static ref SUBSCRIPTION_MANAGER: Arc<SubscriptionManager> = STORE_POOL_CONFIG.3.clone();
-    static ref NODE_ID: NodeId = NodeId::new("test").unwrap();
+    pub static ref NODE_ID: NodeId = NodeId::new("test").unwrap();
     static ref SUBGRAPH_STORE: Arc<DieselSubgraphStore> = STORE.subgraph_store();
     static ref BLOCK_STORE: Arc<DieselBlcokStore> = STORE.block_store();
     pub static ref GENESIS_PTR: EthereumBlockPointer = (
@@ -140,7 +140,7 @@ pub fn place(name: &str) -> Result<Option<(Shard, Vec<NodeId>)>, String> {
     CONFIG.deployment.place(name, NETWORK_NAME)
 }
 
-fn create_subgraph(
+pub fn create_subgraph(
     subgraph_id: &SubgraphDeploymentId,
     schema: &str,
     base: Option<(SubgraphDeploymentId, EthereumBlockPointer)>,
@@ -193,16 +193,6 @@ pub fn remove_subgraph(id: &SubgraphDeploymentId) {
     for detail in SUBGRAPH_STORE.record_unused_deployments().unwrap() {
         SUBGRAPH_STORE.remove_deployment(detail.id).unwrap();
     }
-}
-
-pub fn create_grafted_subgraph(
-    subgraph_id: &SubgraphDeploymentId,
-    schema: &str,
-    base_id: &str,
-    base_block: EthereumBlockPointer,
-) -> Result<DeploymentLocator, StoreError> {
-    let base = Some((SubgraphDeploymentId::new(base_id).unwrap(), base_block));
-    create_subgraph(subgraph_id, schema, base)
 }
 
 pub fn transact_errors(
@@ -453,6 +443,15 @@ pub async fn deployment_state(
 
 pub fn store_is_sharded() -> bool {
     CONFIG.stores.len() > 1
+}
+
+pub fn all_shards() -> Vec<Shard> {
+    CONFIG
+        .stores
+        .keys()
+        .map(|shard| Shard::new(shard.clone()))
+        .collect::<Result<Vec<_>, _>>()
+        .expect("all configured shard names are valid")
 }
 
 fn build_store() -> (Arc<Store>, ConnectionPool, Config, Arc<SubscriptionManager>) {
