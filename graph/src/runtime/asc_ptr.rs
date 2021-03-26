@@ -1,6 +1,6 @@
-use crate::error::DeterministicHostError;
+use super::DeterministicHostError;
 
-use super::{class::EnumPayload, AscHeap, AscType, AscValue};
+use super::{AscHeap, AscType};
 use std::fmt;
 use std::marker::PhantomData;
 use std::mem::size_of;
@@ -92,18 +92,6 @@ impl<C> From<u32> for AscPtr<C> {
     }
 }
 
-impl<C> From<EnumPayload> for AscPtr<C> {
-    fn from(payload: EnumPayload) -> Self {
-        AscPtr::new(payload.0 as u32)
-    }
-}
-
-impl<C> From<AscPtr<C>> for EnumPayload {
-    fn from(x: AscPtr<C>) -> EnumPayload {
-        EnumPayload(x.0 as u64)
-    }
-}
-
 impl<T> AscType for AscPtr<T> {
     fn to_asc_bytes(&self) -> Result<Vec<u8>, DeterministicHostError> {
         self.0.to_asc_bytes()
@@ -114,5 +102,3 @@ impl<T> AscType for AscPtr<T> {
         Ok(AscPtr::new(bytes))
     }
 }
-
-impl<T> AscValue for AscPtr<T> {}

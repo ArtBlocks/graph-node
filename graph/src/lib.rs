@@ -16,6 +16,10 @@ pub mod log;
 /// `CheapClone` trait.
 pub mod cheap_clone;
 
+pub mod blockchain;
+
+pub mod runtime;
+
 /// Module with mocks for different parts of the system.
 pub mod mock {
     pub use crate::components::ethereum::MockEthereumAdapter;

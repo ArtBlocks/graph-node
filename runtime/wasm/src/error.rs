@@ -4,9 +4,6 @@ use graph::components::subgraph::MappingError;
 use std::{error, fmt};
 use wasmtime::Trap;
 
-#[derive(Debug)]
-pub struct DeterministicHostError(pub Error);
-
 pub enum DeterminismLevel {
     /// This error is known to be deterministic. For example, divide by zero.
     /// TODO: For these errors, a further designation should be created about the contents
@@ -19,14 +16,6 @@ pub enum DeterminismLevel {
     /// and is the default for errors like anyhow which are of an unknown origin.
     Unimplemented,
 }
-
-impl fmt::Display for DeterministicHostError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl error::Error for DeterministicHostError {}
 
 impl From<DeterministicHostError> for HostExportError {
     fn from(value: DeterministicHostError) -> Self {

@@ -345,6 +345,18 @@ impl From<i64> for EnumPayload {
     }
 }
 
+impl<C> From<EnumPayload> for AscPtr<C> {
+    fn from(payload: EnumPayload) -> Self {
+        AscPtr::new(payload.0 as u32)
+    }
+}
+
+impl<C> From<AscPtr<C>> for EnumPayload {
+    fn from(x: AscPtr<C>) -> EnumPayload {
+        EnumPayload(x.0 as u64)
+    }
+}
+
 /// In Asc, we represent a Rust enum as a discriminant `kind: D`, which is an
 /// Asc enum so in Rust it's a `#[repr(u32)]` enum, plus an arbitrary `AscValue`
 /// payload.
