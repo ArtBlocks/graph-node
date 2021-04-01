@@ -13,7 +13,8 @@ use graph::{
 use graph_node::config;
 use graph_node::store_builder::StoreBuilder;
 use graph_store_postgres::{
-    connection_pool::ConnectionPool, Store, SubgraphStore, SubscriptionManager, PRIMARY_SHARD,
+    connection_pool::ConnectionPool, Shard, Store, SubgraphStore, SubscriptionManager,
+    PRIMARY_SHARD,
 };
 
 use crate::config::Config as Cfg;
@@ -203,6 +204,10 @@ pub enum CopyCommand {
         /// The name of the database shard that holds the copy
         shard: String,
     },
+    List,
+    Status {
+        dst: i32,
+    },
 }
 
 impl From<Opt> for config::Opt {
@@ -263,6 +268,16 @@ impl Context {
     }
 
     fn store(self) -> Arc<Store> {
+        let (store, _) = self.store_and_pools();
+        store
+    }
+
+    fn pools(self) -> HashMap<Shard, ConnectionPool> {
+        let (_, pools) = self.store_and_pools();
+        pools
+    }
+
+    fn store_and_pools(self) -> (Arc<Store>, HashMap<Shard, ConnectionPool>) {
         let (subgraph_store, pools) = StoreBuilder::make_subgraph_store_and_pools(
             &self.logger,
             &self.node_id,
@@ -270,13 +285,15 @@ impl Context {
             self.registry,
         );
 
-        StoreBuilder::make_store(
+        let store = StoreBuilder::make_store(
             &self.logger,
-            pools,
+            pools.clone(),
             subgraph_store,
             HashMap::default(),
             vec![],
-        )
+        );
+
+        (store, pools)
     }
 }
 
@@ -374,6 +391,8 @@ async fn main() {
                 Activate { deployment, shard } => {
                     commands::copy::activate(ctx.subgraph_store(), deployment, shard)
                 }
+                List => commands::copy::list(ctx.primary_pool()),
+                Status { dst } => commands::copy::status(ctx.pools(), dst),
             }
         }
     };

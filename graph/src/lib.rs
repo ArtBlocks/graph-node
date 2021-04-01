@@ -50,6 +50,7 @@ pub mod prelude {
     pub use anyhow::{anyhow, Context as _, Error};
     pub use async_trait::async_trait;
     pub use bigdecimal;
+    pub use chrono;
     pub use ethabi;
     pub use futures::future;
     pub use futures::prelude::*;
