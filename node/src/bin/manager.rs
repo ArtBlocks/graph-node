@@ -98,11 +98,15 @@ pub enum Command {
         id: String,
         /// The name of the node that should index the deployment
         node: String,
+        /// The shard of the deployment if `id` itself is ambiguous
+        shard: Option<String>,
     },
     /// Unassign a deployment
     Unassign {
         /// The id of the deployment to unassign
         id: String,
+        /// The shard of the deployment if `id` itself is ambiguous
+        shard: Option<String>,
     },
     /// Check and interrogate the configuration
     ///
@@ -192,6 +196,8 @@ pub enum CopyCommand {
         shard: String,
         /// The name of the node that should index the copy
         node: String,
+        /// The shard of the `src` subgraph in case that is ambiguous
+        src_shard: Option<String>,
     },
     /// Activate the copy of a deployment.
     ///
@@ -364,8 +370,10 @@ async fn main() {
             }
         }
         Remove { name } => commands::remove::run(ctx.subgraph_store(), name),
-        Unassign { id } => commands::assign::unassign(ctx.subgraph_store(), id),
-        Reassign { id, node } => commands::assign::reassign(ctx.subgraph_store(), id, node),
+        Unassign { id, shard } => commands::assign::unassign(ctx.subgraph_store(), id, shard),
+        Reassign { id, node, shard } => {
+            commands::assign::reassign(ctx.subgraph_store(), id, node, shard)
+        }
         Listen(cmd) => {
             use ListenCommand::*;
             match cmd {
@@ -387,7 +395,8 @@ async fn main() {
                     shard,
                     node,
                     offset,
-                } => commands::copy::create(ctx.store(), src, shard, node, offset).await,
+                    src_shard,
+                } => commands::copy::create(ctx.store(), src, src_shard, shard, node, offset).await,
                 Activate { deployment, shard } => {
                     commands::copy::activate(ctx.subgraph_store(), deployment, shard)
                 }
