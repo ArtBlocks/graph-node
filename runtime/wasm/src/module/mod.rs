@@ -555,6 +555,7 @@ impl WasmInstance {
         link!("log.log", log_log, level, msg_ptr);
 
         link!("abi.encode", abi_encode, params_ptr);
+        link!("abi.decode", abi_decode, params_ptr, data_ptr);
 
         link!("arweave.transactionData", arweave_transaction_data, ptr);
 
@@ -1379,6 +1380,19 @@ impl WasmInstanceContext {
         let data = host_exports::abi_encode(self.asc_get(params_ptr)?);
         // return `null` if it fails
         data.map(|bytes| self.asc_new(&*bytes))
+            .unwrap_or(Ok(AscPtr::null()))
+    }
+
+    /// function decode(types: String, data: Bytes): Array<ethereum.Value> | null
+    fn abi_decode(
+        &mut self,
+        types_ptr: AscPtr<AscString>,
+        data_ptr: AscPtr<Uint8Array>,
+    ) -> Result<AscPtr<AscEnum<EthereumValueKind>>, DeterministicHostError> {
+        let result = host_exports::abi_decode(self.asc_get(types_ptr)?, self.asc_get(data_ptr)?);
+        // return `null` if it fails
+        result
+            .map(|param| self.asc_new(&param))
             .unwrap_or(Ok(AscPtr::null()))
     }
 

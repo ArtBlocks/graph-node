@@ -4,7 +4,8 @@ use crate::{
     UnresolvedContractCall,
 };
 use bytes::Bytes;
-use ethabi::{encode, Address, Token};
+use ethabi::param_type::Reader;
+use ethabi::{decode, encode, Address, Token};
 use graph::components::ethereum::*;
 use graph::components::store::EntityKey;
 use graph::components::subgraph::{ProofOfIndexingEvent, SharedProofOfIndexing};
@@ -814,6 +815,18 @@ pub(crate) fn bytes_to_string(logger: &Logger, bytes: Vec<u8>) -> String {
 
 pub(crate) fn abi_encode(params: Vec<Token>) -> Result<Vec<u8>, anyhow::Error> {
     Ok(encode(&params))
+}
+
+pub(crate) fn abi_decode(types: String, data: Vec<u8>) -> Result<Token, anyhow::Error> {
+    let param_types =
+        Reader::read(&types).or_else(|e| Err(anyhow::anyhow!("Failed to read types: {}", e)))?;
+
+    decode(&[param_types], &data)
+        // The `.pop().unwrap()` here is ok because we're always only passing one
+        // `param_types` to `decode`, so the returned `Vec` has always size of one.
+        // We can't do `tokens[0]` because the value can't be moved out of the `Vec`.
+        .map(|mut tokens| tokens.pop().unwrap())
+        .context("Failed to decode")
 }
 
 #[test]
