@@ -4,7 +4,7 @@ use crate::{
     UnresolvedContractCall,
 };
 use bytes::Bytes;
-use ethabi::{Address, Token};
+use ethabi::{encode, Address, Token};
 use graph::components::ethereum::*;
 use graph::components::store::EntityKey;
 use graph::components::subgraph::{ProofOfIndexingEvent, SharedProofOfIndexing};
@@ -810,6 +810,10 @@ pub(crate) fn bytes_to_string(logger: &Logger, bytes: Vec<u8>) -> String {
     // The string may have been encoded in a fixed length buffer and padded with null
     // characters, so trim trailing nulls.
     s.trim_end_matches('\u{0000}').to_string()
+}
+
+pub(crate) fn abi_encode(params: Vec<Token>) -> Result<Vec<u8>, anyhow::Error> {
+    Ok(encode(&params))
 }
 
 #[test]
