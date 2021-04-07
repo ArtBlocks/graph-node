@@ -476,6 +476,9 @@ impl WasmInstance {
             })?;
         }
 
+        link!("ethereum.encode", ethereum_encode, params_ptr);
+        link!("ethereum.decode", ethereum_decode, params_ptr, data_ptr);
+
         link!("abort", abort, message_ptr, file_name_ptr, line, column);
 
         link!("store.get", store_get, "host_export_store_get", entity, id);
@@ -553,9 +556,6 @@ impl WasmInstance {
         link!("ens.nameByHash", ens_name_by_hash, ptr);
 
         link!("log.log", log_log, level, msg_ptr);
-
-        link!("abi.encode", abi_encode, params_ptr);
-        link!("abi.decode", abi_decode, params_ptr, data_ptr);
 
         link!("arweave.transactionData", arweave_transaction_data, ptr);
 
@@ -1373,23 +1373,28 @@ impl WasmInstanceContext {
     }
 
     /// function encode(params: Array<ethereum.Value>): Bytes | null
-    fn abi_encode(
+    fn ethereum_encode(
         &mut self,
         params_ptr: AscPtr<Array<AscPtr<AscEnum<EthereumValueKind>>>>,
     ) -> Result<AscPtr<Uint8Array>, DeterministicHostError> {
-        let data = host_exports::abi_encode(self.asc_get(params_ptr)?);
+        println!("--------INSIDE ENCODE CONVERSIONS");
+        println!("--------INSIDE ENCODE CONVERSIONS");
+        println!("--------INSIDE ENCODE CONVERSIONS");
+        println!("--------INSIDE ENCODE CONVERSIONS");
+        let data = host_exports::ethereum_encode(self.asc_get(params_ptr)?);
         // return `null` if it fails
         data.map(|bytes| self.asc_new(&*bytes))
             .unwrap_or(Ok(AscPtr::null()))
     }
 
     /// function decode(types: String, data: Bytes): Array<ethereum.Value> | null
-    fn abi_decode(
+    fn ethereum_decode(
         &mut self,
         types_ptr: AscPtr<AscString>,
         data_ptr: AscPtr<Uint8Array>,
     ) -> Result<AscPtr<AscEnum<EthereumValueKind>>, DeterministicHostError> {
-        let result = host_exports::abi_decode(self.asc_get(types_ptr)?, self.asc_get(data_ptr)?);
+        println!("--------INSIDE DECODE CONVERSIONS");
+        let result = host_exports::ethereum_decode(self.asc_get(types_ptr)?, self.asc_get(data_ptr)?);
         // return `null` if it fails
         result
             .map(|param| self.asc_new(&param))

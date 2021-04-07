@@ -1,10 +1,43 @@
 import { Trigger } from "../generated/Contract/Contract";
-import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 
 // Test that host exports work in globals.
 let one = BigDecimal.fromString("1");
 
 export function handleTrigger(event: Trigger): void {
+  log.info('-------------oi {}', ['1'])
+  log.error('------------oi {}', ['2'])
+  log.debug('------------oi {}', ['3'])
+  log.warning('------------oi {}', ['4'])
+  log.critical('------------oi {}', ['5'])
+  // throw new Error('errrooooooo')
+
+  let params: Array<ethereum.Value> = [
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(64)),
+    ethereum.Value.fromAddress(Address.fromString("0x0000000000000000000000000000000000000420"))
+  ];
+  log.critical('critical---------------params {}', [params[0].toString(), params[1].toString()])
+  log.error('error--------------params {}', [params[0].toString(), params[1].toString()])
+  log.warning('warning--------------params {}', [params[0].toString(), params[1].toString()])
+  log.info('info---------------params {}', [params[0].toString(), params[1].toString()])
+  log.debug('debug-----------------params {}', [params[0].toString(), params[1].toString()])
+
+  let encoded = ethereum.encode(params);
+  log.critical('critical----------------------encoded {}', [encoded.toString()])
+  log.error('error----------------------encoded {}', [encoded.toString()])
+  log.warning('warning----------------------encoded {}', [encoded.toString()])
+  log.info('info----------------------encoded {}', [encoded.toString()])
+  log.debug('debug----------------------encoded {}', [encoded.toString()])
+
+  // log.info("Encoded data {}", [encoded.toHexString()])
+
+  let decoded = ethereum.decode("[uint256,address]", encoded!);
+  log.critical('critical------------------decoded {}', [decoded.toString()])
+  log.error('error------------------decoded {}', [decoded.toString()])
+  log.warning('warning------------------decoded {}', [decoded.toString()])
+  log.info('info------------------decoded {}', [decoded.toString()])
+  log.debug('debug------------------decoded {}', [decoded.toString()])
+
   // There are 35 digits after the dot.
   // big_decimal exponent will be: -35 - 6109 = -6144.
   // Minimum exponent is: -6143.

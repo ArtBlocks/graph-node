@@ -813,20 +813,35 @@ pub(crate) fn bytes_to_string(logger: &Logger, bytes: Vec<u8>) -> String {
     s.trim_end_matches('\u{0000}').to_string()
 }
 
-pub(crate) fn abi_encode(params: Vec<Token>) -> Result<Vec<u8>, anyhow::Error> {
+pub(crate) fn ethereum_encode(params: Vec<Token>) -> Result<Vec<u8>, anyhow::Error> {
+    println!("---------------INSIDE ENCODE {:?}", params);
     Ok(encode(&params))
 }
 
-pub(crate) fn abi_decode(types: String, data: Vec<u8>) -> Result<Token, anyhow::Error> {
+pub(crate) fn ethereum_decode(types: String, data: Vec<u8>) -> Result<Token, anyhow::Error> {
+    println!("---------------INSIDE DECODE {} {:?}", types, data);
     let param_types =
-        Reader::read(&types).or_else(|e| Err(anyhow::anyhow!("Failed to read types: {}", e)))?;
+        Reader::read(&types).or_else(|e| {
+            println!("-------------------INSIDE DECODE Reader::read err {:?}", e);
+            Err(anyhow::anyhow!("Failed to read types: {}", e))
+        })?;
+
+    println!("---------------INSIDE DECODE param_types {:?}", param_types);
 
     decode(&[param_types], &data)
+        .map(|a| {
+            println!("-------------------INSIDE DECODE map {:?}", a);
+            a
+        })
         // The `.pop().unwrap()` here is ok because we're always only passing one
         // `param_types` to `decode`, so the returned `Vec` has always size of one.
         // We can't do `tokens[0]` because the value can't be moved out of the `Vec`.
         .map(|mut tokens| tokens.pop().unwrap())
         .context("Failed to decode")
+        .map_err(|e| {
+            println!("-------------------INSIDE DECODE decode err {:?}", e);
+            e
+        })
 }
 
 #[test]

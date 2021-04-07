@@ -15,17 +15,18 @@ use tokio::process::{Child, Command};
 const DEFAULT_N_CONCURRENT_TESTS: usize = 15;
 
 /// All integration tests subdirectories to run
-pub const INTEGRATION_TESTS_DIRECTORIES: [&str; 9] = [
+// pub const INTEGRATION_TESTS_DIRECTORIES: [&str; 9] = [
+pub const INTEGRATION_TESTS_DIRECTORIES: [&str; 1] = [
     // "arweave-and-3box",
     "big-decimal",
-    "data-source-context",
-    "data-source-revert",
-    "fatal-error",
-    "ganache-reverts",
-    "non-fatal-errors",
-    "overloaded-contract-functions",
-    "remove-then-update",
-    "value-roundtrip",
+    // "data-source-context",
+    // "data-source-revert",
+    // "fatal-error",
+    // "ganache-reverts",
+    // "non-fatal-errors",
+    // "overloaded-contract-functions",
+    // "remove-then-update",
+    // "value-roundtrip",
 ];
 
 /// Contains all information a test command needs
