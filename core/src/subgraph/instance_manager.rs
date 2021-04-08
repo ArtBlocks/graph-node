@@ -209,7 +209,7 @@ where
         loc: DeploymentLocator,
         manifest: serde_yaml::Mapping,
     ) {
-        let logger = self.logger_factory.subgraph_logger(&loc.hash);
+        let logger = self.logger_factory.subgraph_logger(&loc);
 
         graph::spawn(async move {
             match Self::start_subgraph_inner(
@@ -239,7 +239,7 @@ where
     }
 
     fn stop_subgraph(&self, loc: DeploymentLocator) {
-        let logger = self.logger_factory.subgraph_logger(&loc.hash);
+        let logger = self.logger_factory.subgraph_logger(&loc);
         info!(logger, "Stop subgraph");
 
         // Drop the cancel guard to shut down the subgraph now
