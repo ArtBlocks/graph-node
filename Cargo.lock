@@ -1120,7 +1120,7 @@ dependencies = [
  "fixed-hash",
  "impl-rlp",
  "impl-serde",
- "tiny-keccak 2.0.2",
+ "tiny-keccak",
 ]
 
 [[package]]
@@ -1497,7 +1497,7 @@ dependencies = [
  "strum_macros",
  "test-store",
  "thiserror",
- "tiny-keccak 1.5.0",
+ "tiny-keccak",
  "tokio",
  "tokio-retry",
  "tokio-stream",
@@ -1571,7 +1571,7 @@ dependencies = [
  "semver",
  "serde",
  "test-store",
- "tiny-keccak 1.5.0",
+ "tiny-keccak",
  "tonic-build",
 ]
 
@@ -4199,15 +4199,6 @@ dependencies = [
 
 [[package]]
 name = "tiny-keccak"
-version = "1.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d8a021c69bb74a44ccedb824a046447e2c84a01df9e5c20779750acb38e11b2"
-dependencies = [
- "crunchy",
-]
-
-[[package]]
-name = "tiny-keccak"
 version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2c9d3793400a45f954c52e73d068316d76b6f4e36977e3fcebb13a2721e80237"
@@ -5089,7 +5080,7 @@ dependencies = [
  "serde",
  "serde_json",
  "soketto",
- "tiny-keccak 2.0.2",
+ "tiny-keccak",
  "tokio",
  "tokio-stream",
  "tokio-util 0.6.7",
