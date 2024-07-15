@@ -59,7 +59,7 @@ prost-types = { workspace = true }
 futures03 = { version = "0.3.1", package = "futures", features = ["compat"] }
 wasmparser = "0.78.2"
 thiserror = "1.0.25"
-parking_lot = "0.12.1"
+parking_lot = "0.12.3"
 itertools = "0.10.5"
 
 # Our fork contains patches to make some fields optional for Celo and Fantom compatibility.

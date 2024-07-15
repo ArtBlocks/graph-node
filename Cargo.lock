@@ -1578,7 +1578,7 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "num_cpus",
- "parking_lot 0.12.1",
+ "parking_lot 0.12.3",
  "petgraph",
  "priority-queue",
  "prometheus",
@@ -1770,7 +1770,7 @@ dependencies = [
  "graphql-tools",
  "indexmap",
  "lazy_static",
- "parking_lot 0.12.1",
+ "parking_lot 0.12.3",
  "stable-hash 0.3.3",
  "stable-hash 0.4.2",
 ]
@@ -2581,7 +2581,7 @@ dependencies = [
  "hyper",
  "jsonrpsee-types",
  "lazy_static",
- "parking_lot 0.12.1",
+ "parking_lot 0.12.3",
  "rand",
  "rustc-hash",
  "serde",
@@ -3095,9 +3095,9 @@ dependencies = [
 
 [[package]]
 name = "parking_lot"
-version = "0.12.1"
+version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3742b2c103b9f06bc9fff0a37ff4912935851bee6d36f3c02bcc755bcfec228f"
+checksum = "f1bf18183cf54e8d6059647fc3063646a1801cf30896933ec2311622cc4b9a27"
 dependencies = [
  "lock_api",
  "parking_lot_core 0.9.1",
@@ -3378,7 +3378,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "memchr",
- "parking_lot 0.12.1",
+ "parking_lot 0.12.3",
  "protobuf 2.25.0",
  "reqwest",
  "thiserror",
@@ -4546,7 +4546,7 @@ dependencies = [
  "libc",
  "mio",
  "num_cpus",
- "parking_lot 0.12.1",
+ "parking_lot 0.12.3",
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",
@@ -5491,7 +5491,7 @@ dependencies = [
  "jsonrpc-core",
  "log",
  "once_cell",
- "parking_lot 0.12.1",
+ "parking_lot 0.12.3",
  "pin-project",
  "reqwest",
  "rlp",
