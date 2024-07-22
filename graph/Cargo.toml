@@ -46,7 +46,7 @@ slog-term = "2.7.0"
 petgraph = "0.6.3"
 tiny-keccak = "1.5.0"
 tokio = { version = "1.28.2", features = ["time", "sync", "macros", "test-util", "rt-multi-thread", "parking_lot"] }
-tokio-stream = { version = "0.1.14", features = ["sync"] }
+tokio-stream = { version = "0.1.15", features = ["sync"] }
 tokio-retry = "0.3.0"
 toml = "0.7.4"
 url = "2.3.1"
